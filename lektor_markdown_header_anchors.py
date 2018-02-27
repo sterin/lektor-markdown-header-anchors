@@ -24,7 +24,7 @@ class MarkdownHeaderAnchorsPlugin(Plugin):
     def on_markdown_config(self, config, **extra):
         class HeaderAnchorMixin(object):
             def header(renderer, text, level, raw):
-                if self.get_config().get('anchor-type') == "random":
+                if self.random_anchors:
                     anchor = uuid.uuid4().hex[:6]
                 else:
                     anchor = unique_anchor(renderer.meta['anchor_slug_counter'], raw)
@@ -33,6 +33,7 @@ class MarkdownHeaderAnchorsPlugin(Plugin):
         config.renderer_mixins.append(HeaderAnchorMixin)
 
     def on_markdown_meta_init(self, meta, **extra):
+        self.random_anchors = self.get_config().get('anchor-type') == "random"
         meta['toc'] = []
         meta['anchor_slug_counter'] = Counter()
 
